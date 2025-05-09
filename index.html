@@ -1,0 +1,840 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Riski Motor - Jual Beli Motor Harley-Davidson
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap");
+    body {
+      font-family: "Roboto Condensed", sans-serif;
+    }
+  </style>
+ </head>
+ <body class="bg-gray-50 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white shadow-md">
+   <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center p-4">
+    <div class="flex items-center space-x-3">
+     <img alt="Logo Riski Motor" class="w-12 h-12 rounded" height="48" src="https://storage.googleapis.com/a1aa/image/fa3f6038-6632-41fd-991c-b9e7452f0855.jpg" width="48"/>
+     <div>
+      <h1 class="text-2xl font-extrabold text-gray-900">
+       Riski Motor
+      </h1>
+      <p class="text-xs text-gray-600">
+       Tabanan, Bali
+      </p>
+     </div>
+    </div>
+    <nav class="mt-3 sm:mt-0 space-x-4">
+     <button class="text-gray-700 hover:text-blue-600 font-semibold" id="btnLogin">
+      Login
+     </button>
+     <button class="text-gray-700 hover:text-blue-600 font-semibold" id="btnRegister">
+      Register
+     </button>
+     <button class="hidden text-gray-700 hover:text-blue-600 font-semibold" id="btnLogout">
+      Logout
+     </button>
+    </nav>
+   </div>
+  </header>
+  <!-- Main content -->
+  <main class="flex-grow max-w-7xl mx-auto p-4 w-full">
+   <h2 class="text-3xl font-bold mb-6 text-center text-gray-900">
+    Daftar Motor Harley-Davidson
+   </h2>
+   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="motorList">
+    <!-- Motor items inserted here dynamically -->
+   </div>
+  </main>
+  <!-- Admin Dashboard Modal -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center p-4 overflow-auto" id="adminDashboard">
+   <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+    <h3 class="text-xl font-bold mb-4">
+     Dashboard Admin
+    </h3>
+    <button aria-label="Close admin dashboard" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900" id="closeAdminDashboard">
+     <i class="fas fa-times fa-lg">
+     </i>
+    </button>
+    <form class="mb-6 space-y-4" id="motorForm">
+     <input id="motorId" type="hidden"/>
+     <div>
+      <label class="block font-semibold mb-1" for="motorName">
+       Nama Motor
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="motorName" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="motorDesc">
+       Deskripsi Singkat
+      </label>
+      <textarea class="w-full border border-gray-300 rounded px-3 py-2" id="motorDesc" required="" rows="2"></textarea>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="motorPrice">
+       Harga (Rp)
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="motorPrice" min="0" required="" type="number"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="motorImage">
+       URL Foto Motor
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="motorImage" placeholder="https://example.com/image.jpg" required="" type="url"/>
+     </div>
+     <div class="flex space-x-3">
+      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit">
+       Simpan
+      </button>
+      <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" id="btnClearForm" type="button">
+       Bersihkan
+      </button>
+     </div>
+    </form>
+    <h4 class="text-lg font-semibold mb-3">
+     Daftar Motor
+    </h4>
+    <div class="space-y-3 max-h-60 overflow-y-auto" id="adminMotorList">
+     <!-- Admin motor list -->
+    </div>
+   </div>
+  </div>
+  <!-- Login Modal -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center p-4" id="loginModal">
+   <div aria-labelledby="loginTitle" aria-modal="true" class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative" role="dialog">
+    <h3 class="text-xl font-bold mb-4" id="loginTitle">
+     Login
+    </h3>
+    <button aria-label="Close login modal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900" id="closeLoginModal">
+     <i class="fas fa-times fa-lg">
+     </i>
+    </button>
+    <form class="space-y-4" id="loginForm">
+     <div>
+      <label class="block font-semibold mb-1" for="loginUsername">
+       Username
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="loginUsername" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="loginPassword">
+       Password
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="loginPassword" required="" type="password"/>
+     </div>
+     <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full" type="submit">
+      Login
+     </button>
+     <p class="text-sm mt-2 text-center">
+      Belum punya akun?
+      <button class="text-blue-600 hover:underline font-semibold" id="showRegisterFromLogin" type="button">
+       Daftar di sini
+      </button>
+     </p>
+     <p class="text-sm mt-1 text-center">
+      Lupa password?
+      <button class="text-blue-600 hover:underline font-semibold" id="showResetPasswordFromLogin" type="button">
+       Reset password
+      </button>
+     </p>
+    </form>
+   </div>
+  </div>
+  <!-- Register Modal -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center p-4" id="registerModal">
+   <div aria-labelledby="registerTitle" aria-modal="true" class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative" role="dialog">
+    <h3 class="text-xl font-bold mb-4" id="registerTitle">
+     Registrasi Akun Baru
+    </h3>
+    <button aria-label="Close register modal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900" id="closeRegisterModal">
+     <i class="fas fa-times fa-lg">
+     </i>
+    </button>
+    <form class="space-y-4" id="registerForm">
+     <div>
+      <label class="block font-semibold mb-1" for="registerUsername">
+       Username
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="registerUsername" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="registerPassword">
+       Password
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="registerPassword" required="" type="password"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="registerPasswordConfirm">
+       Konfirmasi Password
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="registerPasswordConfirm" required="" type="password"/>
+     </div>
+     <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full" type="submit">
+      Daftar
+     </button>
+    </form>
+   </div>
+  </div>
+  <!-- Reset Password Modal -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center p-4" id="resetPasswordModal">
+   <div aria-labelledby="resetPasswordTitle" aria-modal="true" class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative" role="dialog">
+    <h3 class="text-xl font-bold mb-4" id="resetPasswordTitle">
+     Reset Password
+    </h3>
+    <button aria-label="Close reset password modal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900" id="closeResetPasswordModal">
+     <i class="fas fa-times fa-lg">
+     </i>
+    </button>
+    <form class="space-y-4" id="resetPasswordForm">
+     <div>
+      <label class="block font-semibold mb-1" for="resetUsername">
+       Username
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="resetUsername" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="resetNewPassword">
+       Password Baru
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="resetNewPassword" required="" type="password"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="resetNewPasswordConfirm">
+       Konfirmasi Password Baru
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="resetNewPasswordConfirm" required="" type="password"/>
+     </div>
+     <button class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 w-full" type="submit">
+      Reset Password
+     </button>
+    </form>
+   </div>
+  </div>
+  <!-- Payment Modal -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center p-4" id="paymentModal">
+   <div aria-labelledby="paymentTitle" aria-modal="true" class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative" role="dialog">
+    <h3 class="text-xl font-bold mb-4" id="paymentTitle">
+     Pembayaran Motor
+    </h3>
+    <button aria-label="Close payment modal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900" id="closePaymentModal">
+     <i class="fas fa-times fa-lg">
+     </i>
+    </button>
+    <form class="space-y-4" id="paymentForm">
+     <p class="text-gray-700 font-semibold" id="paymentMotorName">
+      <!-- Motor name here -->
+     </p>
+     <p class="text-gray-700 mb-4" id="paymentMotorPrice">
+      <!-- Motor price here -->
+     </p>
+     <div>
+      <label class="block font-semibold mb-1" for="paymentName">
+       Nama Pembeli
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="paymentName" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="paymentEmail">
+       Email
+      </label>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="paymentEmail" required="" type="email"/>
+     </div>
+     <div>
+      <label class="block font-semibold mb-1" for="paymentMethod">
+       Metode Pembayaran
+      </label>
+      <select class="w-full border border-gray-300 rounded px-3 py-2" id="paymentMethod" required="">
+       <option value="" disabled selected>
+        Pilih metode pembayaran
+       </option>
+       <option value="Transfer Bank">
+        Transfer Bank
+       </option>
+       <option value="Kartu Kredit">
+        Kartu Kredit
+       </option>
+       <option value="COD">
+        Cash on Delivery (COD)
+       </option>
+      </select>
+     </div>
+     <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full" type="submit">
+      Bayar
+     </button>
+    </form>
+   </div>
+  </div>
+  <!-- Contact & Footer -->
+  <footer class="bg-white border-t border-gray-300 mt-12">
+   <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div>
+     <h4 class="font-bold text-lg mb-2">
+      Kontak Kami
+     </h4>
+     <form class="space-y-3" id="contactForm">
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="contactName" placeholder="Nama" required="" type="text"/>
+      <input class="w-full border border-gray-300 rounded px-3 py-2" id="contactEmail" placeholder="Email" required="" type="email"/>
+      <textarea class="w-full border border-gray-300 rounded px-3 py-2" id="contactMessage" placeholder="Pesan" required="" rows="3"></textarea>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full" type="submit">
+       Kirim
+      </button>
+     </form>
+    </div>
+    <div class="md:col-span-2">
+     <h4 class="font-bold text-lg mb-2">
+      Informasi Toko
+     </h4>
+     <p>
+      Riski Motor - Jual Beli Motor Harley-Davidson
+     </p>
+     <p>
+      Alamat: Tabanan, Bali
+     </p>
+     <p>
+      Telepon: +62 812 3456 7890
+     </p>
+     <p>
+      Email: info@riskimotor.com
+     </p>
+     <p class="mt-4 text-sm text-gray-500">
+      © 2024 Riski Motor. All rights reserved.
+     </p>
+    </div>
+   </div>
+  </footer>
+  <script>
+   // Data storage keys
+    const USERS_KEY = "riskiMotorUsers";
+    const CURRENT_USER_KEY = "riskiMotorCurrentUser";
+    const MOTORS_KEY = "riskiMotorMotors";
+
+    // Elements
+    const motorListEl = document.getElementById("motorList");
+    const adminDashboardEl = document.getElementById("adminDashboard");
+    const adminMotorListEl = document.getElementById("adminMotorList");
+    const motorForm = document.getElementById("motorForm");
+    const motorIdInput = document.getElementById("motorId");
+    const motorNameInput = document.getElementById("motorName");
+    const motorDescInput = document.getElementById("motorDesc");
+    const motorPriceInput = document.getElementById("motorPrice");
+    const motorImageInput = document.getElementById("motorImage");
+    const btnClearForm = document.getElementById("btnClearForm");
+
+    const btnLogin = document.getElementById("btnLogin");
+    const btnRegister = document.getElementById("btnRegister");
+    const btnLogout = document.getElementById("btnLogout");
+
+    const loginModal = document.getElementById("loginModal");
+    const registerModal = document.getElementById("registerModal");
+    const resetPasswordModal = document.getElementById("resetPasswordModal");
+    const paymentModal = document.getElementById("paymentModal");
+
+    const closeLoginModalBtn = document.getElementById("closeLoginModal");
+    const closeRegisterModalBtn = document.getElementById("closeRegisterModal");
+    const closeResetPasswordModalBtn = document.getElementById(
+      "closeResetPasswordModal"
+    );
+    const closePaymentModalBtn = document.getElementById("closePaymentModal");
+
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const resetPasswordForm = document.getElementById("resetPasswordForm");
+    const paymentForm = document.getElementById("paymentForm");
+
+    const showRegisterFromLoginBtn = document.getElementById(
+      "showRegisterFromLogin"
+    );
+    const showResetPasswordFromLoginBtn = document.getElementById(
+      "showResetPasswordFromLogin"
+    );
+
+    const closeAdminDashboardBtn = document.getElementById("closeAdminDashboard");
+
+    const contactForm = document.getElementById("contactForm");
+
+    const paymentMotorNameEl = document.getElementById("paymentMotorName");
+    const paymentMotorPriceEl = document.getElementById("paymentMotorPrice");
+
+    // Initial sample motors if none in localStorage
+    const sampleMotors = [
+      {
+        id: "1",
+        name: "Harley-Davidson Sportster S",
+        description:
+          "Motor sport dengan performa tinggi dan desain modern.",
+        price: 450000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/4898fa2b-fefe-4836-62ba-32543608e91c.jpg",
+      },
+      {
+        id: "2",
+        name: "Harley-Davidson Nightster",
+        description: "Motor cruiser dengan gaya klasik dan mesin bertenaga.",
+        price: 380000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/ce8cf276-b038-43a3-319c-06e765f4890e.jpg",
+      },
+      {
+        id: "3",
+        name: "Harley-Davidson Street Bob",
+        description: "Motor bobber dengan tampilan minimalis dan agresif.",
+        price: 350000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/878b4a60-ecf4-4830-c8d7-5dcddac97c3f.jpg",
+      },
+      {
+        id: "4",
+        name: "Harley-Davidson Fat Bob",
+        description: "Motor cruiser bertenaga dengan desain agresif.",
+        price: 420000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/ec7ba943-f910-4c78-8dde-1a7ba3a55dd2.jpg",
+      },
+      {
+        id: "5",
+        name: "Harley-Davidson Street Glide Special",
+        description: "Motor touring dengan kenyamanan dan teknologi tinggi.",
+        price: 600000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/6c89c18d-dc4e-44db-4737-bca61c18c55c.jpg",
+      },
+      {
+        id: "6",
+        name: "Harley-Davidson Fat Boy",
+        description: "Motor cruiser klasik dengan tampilan ikonik.",
+        price: 480000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/8e4f66e3-c865-4738-0930-b261afc836ac.jpg",
+      },
+      {
+        id: "7",
+        name: "Harley-Davidson Ultra Limited",
+        description: "Motor touring premium dengan fitur lengkap.",
+        price: 750000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/ed30260e-cd22-494f-088e-e38404225504.jpg",
+      },
+      {
+        id: "8",
+        name: "Harley-Davidson Road King Special",
+        description: "Motor touring dengan performa dan gaya yang kuat.",
+        price: 700000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/fadb1393-b622-477a-c5d6-6d77c1d643d1.jpg",
+      },
+      {
+        id: "9",
+        name: "Harley-Davidson Road Glide Special",
+        description: "Motor touring dengan aerodinamika dan kenyamanan tinggi.",
+        price: 720000000,
+        image:
+          "https://storage.googleapis.com/a1aa/image/54121042-809b-4eaa-8661-8489f7a2d67f.jpg",
+      },
+    ];
+
+    // Utility functions
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    }
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+    function getCurrentUser() {
+      return JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+    }
+    function setCurrentUser(user) {
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    }
+    function clearCurrentUser() {
+      localStorage.removeItem(CURRENT_USER_KEY);
+    }
+    function getMotors() {
+      return JSON.parse(localStorage.getItem(MOTORS_KEY)) || [];
+    }
+    function saveMotors(motors) {
+      localStorage.setItem(MOTORS_KEY, JSON.stringify(motors));
+    }
+
+    // Render motor list on main page
+    function renderMotorList() {
+      const motors = getMotors();
+      motorListEl.innerHTML = "";
+      if (motors.length === 0) {
+        motorListEl.innerHTML =
+          '<p class="col-span-full text-center text-gray-600">Belum ada motor yang tersedia.</p>';
+        return;
+      }
+      motors.forEach((motor) => {
+        const card = document.createElement("div");
+        card.className =
+          "bg-white rounded shadow p-4 flex flex-col justify-between";
+
+        card.innerHTML = `
+          <img src="${motor.image}" alt="Foto motor ${motor.name}" class="w-full h-48 object-contain rounded mb-3" />
+          <h3 class="text-lg font-bold text-gray-900 mb-1">${motor.name}</h3>
+          <p class="text-gray-700 mb-2 flex-grow">${motor.description}</p>
+          <p class="text-blue-700 font-semibold mb-3">Rp ${motor.price.toLocaleString(
+            "id-ID"
+          )}</p>
+          <button class="bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors buy-btn" data-id="${
+            motor.id
+          }">Beli</button>
+        `;
+        motorListEl.appendChild(card);
+      });
+
+      // Add event listeners to buy buttons
+      document.querySelectorAll(".buy-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const motorId = e.target.getAttribute("data-id");
+          const motors = getMotors();
+          const motor = motors.find((m) => m.id === motorId);
+          if (!motor) {
+            alert("Motor tidak ditemukan.");
+            return;
+          }
+          const user = getCurrentUser();
+          if (!user) {
+            alert("Silakan login terlebih dahulu untuk melakukan pembelian.");
+            showModal(loginModal);
+            return;
+          }
+          // Show payment modal with motor info
+          paymentMotorNameEl.textContent = `Motor: ${motor.name}`;
+          paymentMotorPriceEl.textContent = `Harga: Rp ${motor.price.toLocaleString(
+            "id-ID"
+          )}`;
+          paymentForm.dataset.motorId = motor.id;
+          paymentForm.reset();
+          showModal(paymentModal);
+        });
+      });
+    }
+
+    // Render admin motor list with edit/delete
+    function renderAdminMotorList() {
+      const motors = getMotors();
+      adminMotorListEl.innerHTML = "";
+      if (motors.length === 0) {
+        adminMotorListEl.innerHTML =
+          '<p class="text-gray-600">Belum ada motor yang tersedia.</p>';
+        return;
+      }
+      motors.forEach((motor) => {
+        const div = document.createElement("div");
+        div.className =
+          "flex items-center justify-between border border-gray-300 rounded p-2";
+        div.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <img src="${motor.image}" alt="Foto motor ${motor.name}" class="w-16 h-12 object-contain rounded" />
+            <div>
+              <p class="font-semibold">${motor.name}</p>
+              <p class="text-sm text-gray-600">Rp ${motor.price.toLocaleString(
+                "id-ID"
+              )}</p>
+            </div>
+          </div>
+          <div class="space-x-2">
+            <button class="edit-btn text-blue-600 hover:underline" data-id="${
+              motor.id
+            }">Edit</button>
+            <button class="delete-btn text-red-600 hover:underline" data-id="${
+              motor.id
+            }">Hapus</button>
+          </div>
+        `;
+        adminMotorListEl.appendChild(div);
+      });
+
+      // Edit buttons
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const id = e.target.getAttribute("data-id");
+          const motors = getMotors();
+          const motor = motors.find((m) => m.id === id);
+          if (motor) {
+            motorIdInput.value = motor.id;
+            motorNameInput.value = motor.name;
+            motorDescInput.value = motor.description;
+            motorPriceInput.value = motor.price;
+            motorImageInput.value = motor.image;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        });
+      });
+
+      // Delete buttons
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const id = e.target.getAttribute("data-id");
+          if (confirm("Yakin ingin menghapus motor ini?")) {
+            let motors = getMotors();
+            motors = motors.filter((m) => m.id !== id);
+            saveMotors(motors);
+            renderAdminMotorList();
+            renderMotorList();
+          }
+        });
+      });
+    }
+
+    // Clear motor form
+    function clearMotorForm() {
+      motorIdInput.value = "";
+      motorNameInput.value = "";
+      motorDescInput.value = "";
+      motorPriceInput.value = "";
+      motorImageInput.value = "";
+    }
+
+    // Show/hide admin dashboard
+    function showAdminDashboard() {
+      adminDashboardEl.classList.remove("hidden");
+      renderAdminMotorList();
+    }
+    function hideAdminDashboard() {
+      adminDashboardEl.classList.add("hidden");
+      clearMotorForm();
+    }
+
+    // Show/hide modals
+    function showModal(modal) {
+      modal.classList.remove("hidden");
+    }
+    function hideModal(modal) {
+      modal.classList.add("hidden");
+    }
+
+    // Update nav buttons based on login state
+    function updateNav() {
+      const user = getCurrentUser();
+      if (user) {
+        btnLogin.classList.add("hidden");
+        btnRegister.classList.add("hidden");
+        btnLogout.classList.remove("hidden");
+        if (user.isAdmin) {
+          if (!document.getElementById("btnAdminDashboard")) {
+            btnLogout.insertAdjacentHTML(
+              "afterend",
+              '<button id="btnAdminDashboard" class="ml-4 text-gray-700 hover:text-blue-600 font-semibold">Admin Dashboard</button>'
+            );
+            document
+              .getElementById("btnAdminDashboard")
+              .addEventListener("click", showAdminDashboard);
+          }
+        } else {
+          const adminBtn = document.getElementById("btnAdminDashboard");
+          if (adminBtn) adminBtn.remove();
+        }
+      } else {
+        btnLogin.classList.remove("hidden");
+        btnRegister.classList.remove("hidden");
+        btnLogout.classList.add("hidden");
+        const adminBtn = document.getElementById("btnAdminDashboard");
+        if (adminBtn) adminBtn.remove();
+      }
+    }
+
+    // Register user
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("registerUsername").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      const passwordConfirm = document.getElementById(
+        "registerPasswordConfirm"
+      ).value;
+      if (password !== passwordConfirm) {
+        alert("Password dan konfirmasi password tidak cocok.");
+        return;
+      }
+      let users = getUsers();
+      if (users.find((u) => u.username === username)) {
+        alert("Username sudah terdaftar.");
+        return;
+      }
+      users.push({ username, password, isAdmin: false });
+      saveUsers(users);
+      alert("Registrasi berhasil. Silakan login.");
+      registerForm.reset();
+      hideModal(registerModal);
+      showModal(loginModal);
+    });
+
+    // Login user
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const users = getUsers();
+      const user = users.find(
+        (u) => u.username === username && u.password === password
+      );
+      if (!user) {
+        alert("Username atau password salah.");
+        return;
+      }
+      setCurrentUser(user);
+      loginForm.reset();
+      hideModal(loginModal);
+      updateNav();
+      alert(`Selamat datang, ${user.username}!`);
+    });
+
+    // Logout user
+    btnLogout.addEventListener("click", () => {
+      clearCurrentUser();
+      updateNav();
+      alert("Anda telah logout.");
+    });
+
+    // Show register modal from login modal
+    showRegisterFromLoginBtn.addEventListener("click", () => {
+      hideModal(loginModal);
+      showModal(registerModal);
+    });
+
+    // Show reset password modal from login modal
+    showResetPasswordFromLoginBtn.addEventListener("click", () => {
+      hideModal(loginModal);
+      showModal(resetPasswordModal);
+    });
+
+    // Reset password form
+    resetPasswordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("resetUsername").value.trim();
+      const newPassword = document.getElementById("resetNewPassword").value;
+      const newPasswordConfirm = document.getElementById(
+        "resetNewPasswordConfirm"
+      ).value;
+      if (newPassword !== newPasswordConfirm) {
+        alert("Password baru dan konfirmasi tidak cocok.");
+        return;
+      }
+      let users = getUsers();
+      const userIndex = users.findIndex((u) => u.username === username);
+      if (userIndex === -1) {
+        alert("Username tidak ditemukan.");
+        return;
+      }
+      users[userIndex].password = newPassword;
+      saveUsers(users);
+      alert("Password berhasil direset. Silakan login.");
+      resetPasswordForm.reset();
+      hideModal(resetPasswordModal);
+      showModal(loginModal);
+    });
+
+    // Motor form submit (add/edit)
+    motorForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = motorIdInput.value;
+      const name = motorNameInput.value.trim();
+      const description = motorDescInput.value.trim();
+      const price = Number(motorPriceInput.value);
+      const image = motorImageInput.value.trim();
+
+      if (!name || !description || !price || !image) {
+        alert("Semua field harus diisi dengan benar.");
+        return;
+      }
+
+      let motors = getMotors();
+
+      if (id) {
+        // Edit existing
+        const index = motors.findIndex((m) => m.id === id);
+        if (index !== -1) {
+          motors[index] = { id, name, description, price, image };
+        }
+      } else {
+        // Add new
+        const newId = Date.now().toString();
+        motors.push({ id: newId, name, description, price, image });
+      }
+      saveMotors(motors);
+      renderAdminMotorList();
+      renderMotorList();
+      clearMotorForm();
+      alert("Data motor berhasil disimpan.");
+    });
+
+    btnClearForm.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearMotorForm();
+    });
+
+    // Close modals
+    closeLoginModalBtn.addEventListener("click", () => hideModal(loginModal));
+    closeRegisterModalBtn.addEventListener("click", () => hideModal(registerModal));
+    closeResetPasswordModalBtn.addEventListener("click", () =>
+      hideModal(resetPasswordModal)
+    );
+    closeAdminDashboardBtn.addEventListener("click", () => hideAdminDashboard());
+    closePaymentModalBtn.addEventListener("click", () => hideModal(paymentModal));
+
+    // Payment form submit
+    paymentForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const motorId = paymentForm.dataset.motorId;
+      const buyerName = document.getElementById("paymentName").value.trim();
+      const buyerEmail = document.getElementById("paymentEmail").value.trim();
+      const paymentMethod = document.getElementById("paymentMethod").value;
+
+      if (!buyerName || !buyerEmail || !paymentMethod) {
+        alert("Semua field harus diisi.");
+        return;
+      }
+
+      // Simulate payment processing
+      alert(
+        `Terima kasih, ${buyerName}.\nPembayaran motor dengan ID ${motorId} melalui metode "${paymentMethod}" telah berhasil diproses.\nKonfirmasi akan dikirim ke email: ${buyerEmail}`
+      );
+      hideModal(paymentModal);
+    });
+
+    // Show login modal
+    btnLogin.addEventListener("click", () => showModal(loginModal));
+    btnRegister.addEventListener("click", () => showModal(registerModal));
+
+    // Contact form submit
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("contactName").value.trim();
+      const email = document.getElementById("contactEmail").value.trim();
+      const message = document.getElementById("contactMessage").value.trim();
+      if (!name || !email || !message) {
+        alert("Semua field harus diisi.");
+        return;
+      }
+      alert(
+        `Terima kasih, ${name}. Pesan Anda telah kami terima dan akan kami proses.`
+      );
+      contactForm.reset();
+    });
+
+    // Initialize
+    function init() {
+      // Initialize motors if none
+      if (!localStorage.getItem(MOTORS_KEY)) {
+        saveMotors(sampleMotors);
+      }
+      // Initialize admin user if none
+      if (!localStorage.getItem(USERS_KEY)) {
+        // Default admin user: admin/admin123
+        saveUsers([{ username: "admin", password: "admin123", isAdmin: true }]);
+      }
+      updateNav();
+      renderMotorList();
+    }
+
+    init();
+  </script>
+ </body>
+</html>
